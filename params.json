@@ -1,0 +1,30 @@
+[
+    {
+        "ParameterValue": "SriniAWS", 
+        "ParameterKey": "KeyName"
+    }, 
+    {
+        "ParameterValue": "admin", 
+        "ParameterKey": "DBPassword"
+    }, 
+    {
+        "ParameterValue": "0.0.0.0/0", 
+        "ParameterKey": "SSHLocation"
+    }, 
+    {
+        "ParameterValue": "admin", 
+        "ParameterKey": "DBName"
+    }, 
+    {
+        "ParameterValue": "****", 
+        "ParameterKey": "DBUser"
+    }, 
+    {
+        "ParameterValue": "admin", 
+        "ParameterKey": "DBRootPassword"
+    }, 
+    {
+        "ParameterValue": "t2.micro", 
+        "ParameterKey": "InstanceType"
+    }
+]
