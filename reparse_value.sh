@@ -38,6 +38,9 @@ if ! [ -x "$(command -v aws)" ]; then
 fi
 
 # Delete if you have old template dumps in the folder
+if [[ -f dump.json ]]; then
+	rm dump.json
+fi
 if [[ -f params.json ]]; then
 	rm paramas.json
 fi
@@ -45,5 +48,5 @@ fi
 # create new dump of the running template of the stack
 aws cloudformation get-template-summary --stack-name $1 --output=json  --region=$2 > dump.json
 aws cloudformation get-template-summary --stack-name=$1 --output=json  --region=$2 --query  Parameters[*] > params.json
-../jsoncsv.sh
+./jsoncsv.sh
 # aws cloudformation update-stack --stack-name $1  --region=$2 --template-body file:///dump.json --capabilities CAPABILITY_NAMED_IAM --parameters $(cat change.properties)
