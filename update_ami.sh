@@ -51,7 +51,7 @@ list=$(cat params.json |grep 'ParameterKey'|cut -d: -f2|tr -d \"|grep -v ami)
 Vpre=$(echo -e "[\n")
 VList=$(for i in $list
 do
-        echo -e "\t{\n\t \"ParameterKey\":\"${i}\",\n\t UsePreviousValue=true \n\t },\n"
+        echo -e "\t{\n\t \"ParameterKey\":\"${i}\",\n\t \"UsePreviousValue\"=true \n\t },\n"
 done)
 VList=$(echo -e "\n ${VList} \n\t { \n\t\"ParameterKey\":\"ami\", \n\t \"ParameterValue\":\"${3}\" } \n")
 Vpost=$(echo -e "\n]")
