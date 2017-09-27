@@ -5,10 +5,23 @@
 # usage : ./update_ami.sh stack-name region ami-name
 # --------------------------------------------------------
 # Check for stack name args
-if [[ $# -lt 3 ]] ; then
-    echo 'Requires stack-name region ami-name'
-    exit 0
+#!/bin/bash -
+while getopts :a::r::s: option
+do
+        case "${option}" in
+        a) ami=${OPTARG};;
+        r) region=${OPTARG};;
+        s) stack=${OPTARG};;
+        esac
+done
+echo ${ami} ${stack} ${region}
+
+if [[ -z ${ami} || -z ${stack} || -z ${region} ]];
+then
+        echo "You must specify the "
+        exit 1
 fi
+
 # List all aws regions
 region="us-east-1 us-west-2 us-west-1 eu-west-1 eu-central-1 ap-southeast-1 ap-northeast-1 ap-southeast-2 ap-northeast-2 sa-east-1 cn-north-1 ap-south-1"
 MATCH=$2
@@ -37,7 +50,7 @@ if [[ -f params.json ]]; then
 fi
 
 # Get parameters from running stack
-aws cloudformation get-template-summary --stack-name=$1 --output=json  --region=$2 --query  Parameters[*] > params.json
+aws cloudformation get-template-summary --stack-name=${stack} --output=json  --region=$2 --query  Parameters[*] > params.json
 if [[ $? -ne 0 ]] ; then
     echo "AWS Command to get the template of the stack failed! Check Stack-name"
     exit
@@ -53,12 +66,12 @@ VList=$(for i in $list
 do
         echo -e "\t{\n\t \"ParameterKey\":\"${i}\",\n\t \"UsePreviousValue\"=true \n\t },\n"
 done)
-VList=$(echo -e "\n ${VList} \n\t { \n\t\"ParameterKey\":\"ami\", \n\t \"ParameterValue\":\"${3}\" } \n")
+VList=$(echo -e "\n ${VList} \n\t { \n\t\"ParameterKey\":\"ami\", \n\t \"ParameterValue\":\"${ami}\" } \n")
 Vpost=$(echo -e "\n]")
 echo -e "${Vpre} ${VList} ${Vpost}" > ami.json
 
 # Update stack with re-written parameter json 
-aws cloudformation update-stack  --region ${2} --stack-name ${1} --use-previous-template --capabilities CAPABILITY_NAMED_IAM --parameters file://ami.json 
+aws cloudformation update-stack  --region ${region} --stack-name ${stack} --use-previous-template --capabilities CAPABILITY_NAMED_IAM --parameters file://ami.json 
 
 # Cleaning up
 rm params.json
