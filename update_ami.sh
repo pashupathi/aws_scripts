@@ -6,24 +6,38 @@
 # --------------------------------------------------------
 # Check for stack name args
 #!/bin/bash -
-while getopts :a::r::s: option
+# read the options
+# read the options
+stack=
+region=
+ami=
+while getopts "s:r:a:" OPTION
 do
-        case "${option}" in
-        a) ami=${OPTARG};;
-        r) region=${OPTARG};;
-        s) stack=${OPTARG};;
-        esac
+     case $OPTION in
+         s)
+             stack=$OPTARG
+             ;;
+         r)
+             region=$OPTARG
+             ;;
+         a)
+             ami=$OPTARG
+             ;;
+         ?)
+             usage
+             exit
+             ;;
+     esac
 done
-echo ${ami} ${stack} ${region}
-
-if [[ -z ${ami} || -z ${stack} || -z ${region} ]];
+if [[ -z $stack ]] || [[ -z $region ]] || [[ -z $ami ]];
 then
-        echo "You must specify the "
-        exit 1
+     echo "Invalid Options :"
+     echo "./update_ami.sh -s stack-name -r region -a ami-name"
+     exit 1
 fi
 
 # List all aws regions
-region="us-east-1 us-west-2 us-west-1 eu-west-1 eu-central-1 ap-southeast-1 ap-northeast-1 ap-southeast-2 ap-northeast-2 sa-east-1 cn-north-1 ap-south-1"
+#region="us-east-1 us-west-2 us-west-1 eu-west-1 eu-central-1 ap-southeast-1 ap-northeast-1 ap-southeast-2 ap-northeast-2 sa-east-1 cn-north-1 ap-south-1"
 MATCH=$2
 
 # Check the region given in the 2nd argument is one of the valid aws regions
@@ -50,7 +64,7 @@ if [[ -f params.json ]]; then
 fi
 
 # Get parameters from running stack
-aws cloudformation get-template-summary --stack-name=${stack} --output=json  --region=$2 --query  Parameters[*] > params.json
+aws cloudformation get-template-summary --stack-name=${stack} --output=json  --region=${region} --query  Parameters[*] > params.json
 if [[ $? -ne 0 ]] ; then
     echo "AWS Command to get the template of the stack failed! Check Stack-name"
     exit
