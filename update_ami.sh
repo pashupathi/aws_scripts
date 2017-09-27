@@ -27,12 +27,12 @@ region="us-east-1 us-west-2 us-west-1 eu-west-1 eu-central-1 ap-southeast-1 ap-n
 MATCH=$2
 
 # Check the region given in the 2nd argument is one of the valid aws regions
-if echo $region | grep -w $MATCH > /dev/null; then
-     echo "Using $2 as region"
-else
-     echo "Invalid AWS Region specified"
-     exit
-fi
+#if echo $region | grep -w $MATCH > /dev/null; then
+#     echo "Using $2 as region"
+#else
+#     echo "Invalid AWS Region specified"
+#     exit
+#fi
 
 # check aws command works
 if ! [ -x "$(command -v aws)" ]; then
